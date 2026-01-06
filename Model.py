@@ -33,15 +33,28 @@ for items in path.iterdir():
         #resutls: multi_handedness -> info about left/right hand
         results = hands.process(image_rgb)# runs the hand detection  and landmarks
 
-        count = 0
+
         #Check if at least one hand exists
         if results.multi_hand_landmarks: # returns one or two lists containing 21 landmarks depending on how many hands detected
-            for hand_landmarks in results.multi_hand_landmarks:
-                count+=1
-                print(hand_landmarks)
+            for hands in results.multi_hand_landmarks:
+                # loops the landmarks
+                for index,hand_landmark in enumerate(hands.landmark):#hand_landmark is a tuple or list of x,y,z
+                    h,w,_ = read_image.shape
+                    #since x,y,z are normalized (between 0 -1) multiply it with width and height respectively
+                    print(hand_landmark.x * w, hand_landmark.y * h, hand_landmark.z)
 
+                # draw landmarks on images.
+                mp_drawing.draw_landmarks(read_image,hands,mp_hands.HAND_CONNECTIONS)
+
+        # Show result
+        cv2.imshow("Hand Landmarks", read_image)
+        cv2.waitKey(0)
+        cv2.destroyAllWindows()
         break
+
     break
+
+
 
 
 
