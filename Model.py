@@ -2,6 +2,10 @@ from pathlib import Path
 import numpy as np
 import cv2
 import mediapipe as mp
+import sklearn
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import accuracy_score, classification_report
 
 
 #Initializing Hands
@@ -9,7 +13,7 @@ mp_hands = mp.solutions.hands#responsoble for detecting hands and 21 landmarks
 hands = mp_hands.Hands(
     static_image_mode=True, #tells mediapipe that the input is a single image, not a video stream
     max_num_hands=2,# maximum number of hands detected
-    min_detection_confidence=0.15, #Detection must be 50% confident to be accepted. If the detected object has below 50% confidence score, it will ignore it
+    min_detection_confidence=0.25, #Detection must be 50% confident to be accepted. If the detected object has below 50% confidence score, it will ignore it
 )
 
 mp_drawing = mp.solutions.drawing_utils # utility function for drawing landmarks etc.
@@ -90,6 +94,25 @@ for items in path.iterdir():
 
 print(len(x))
 print(len(y))
+
+
+#Split dataset
+x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=0.2, random_state=42)
+
+#Train model
+random_classifier_model = RandomForestClassifier(n_estimators=100, max_depth=None,random_state=42)
+random_classifier_model.fit(x_train, y_train)
+
+#make prediction
+y_pred = random_classifier_model.predict(x_test)
+
+#Model Evaluation
+
+print("Evaluation")
+print(accuracy_score(y_test, y_pred))
+print(classification_report(y_test, y_pred))
+
+
 
 
 
