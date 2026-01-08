@@ -1,4 +1,3 @@
-Dataset: https://www.kaggle.com/datasets/ayuraj/asl-dataset
 <div style="text-align:center;">
   
   <h1 style="color:#0e75b6;">🤟 ASL Hand Landmark Detection & Classification</h1>
@@ -23,6 +22,11 @@ Dataset: https://www.kaggle.com/datasets/ayuraj/asl-dataset
     <li>Scikit-Learn</li>
     <li>medipipe</li>
   </ul>
+</div>
+
+<div class="section">
+  <h2>📊 DataSet Used</h2>
+  <a>https://www.kaggle.com/datasets/ayuraj/asl-dataset</a>
 </div>
 
 <div class="section">
