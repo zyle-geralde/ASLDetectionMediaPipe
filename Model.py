@@ -9,7 +9,7 @@ mp_hands = mp.solutions.hands#responsoble for detecting hands and 21 landmarks
 hands = mp_hands.Hands(
     static_image_mode=True, #tells mediapipe that the input is a single image, not a video stream
     max_num_hands=2,# maximum number of hands detected
-    min_detection_confidence=0.2, #Detection must be 50% confident to be accepted. If the detected object has below 50% confidence score, it will ignore it
+    min_detection_confidence=0.15, #Detection must be 50% confident to be accepted. If the detected object has below 50% confidence score, it will ignore it
 )
 
 mp_drawing = mp.solutions.drawing_utils # utility function for drawing landmarks etc.
