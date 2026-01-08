@@ -131,7 +131,8 @@ Y = np.array(y)
 print("X shape:", X.shape)  # (num_samples, 63)
 print("Y shape:", Y.shape)  # (num_samples,)
 
-np.save("asl_landmarks_X.npy", X)
-np.save("asl_labels_y.npy", Y)
+#Uncomment if you have not saved the file
+#np.save("asl_landmarks_X.npy", X)
+#np.save("asl_labels_y.npy", Y)
 
 print("Landmarks saved")
