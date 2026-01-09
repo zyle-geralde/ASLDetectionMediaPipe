@@ -41,7 +41,7 @@ mp_hands = mp.solutions.hands#responsoble for detecting hands and 21 landmarks
 hands = mp_hands.Hands(
     static_image_mode=True, #tells mediapipe that the input is a single image, not a video stream
     max_num_hands=2,# maximum number of hands detected
-    min_detection_confidence=0.25, #Detection must be 50% confident to be accepted. If the detected object has below 50% confidence score, it will ignore it
+    min_detection_confidence=0.50, #Detection must be 50% confident to be accepted. If the detected object has below 50% confidence score, it will ignore it
 )
 
 mp_drawing = mp.solutions.drawing_utils # utility function for drawing landmarks etc.
@@ -51,7 +51,7 @@ valid_file = {".jpg", ".jpeg", ".png"}
 x = [] # features (the x,y,z landmarks)
 y = [] # labels (a,b,c,d ...)
 
-path = Path("C://Users//zylge//Downloads//asl_dataset") # get the path of the dataset.
+path = Path("C://Users//zylge//Downloads//ASL_dataset") # get the path of the dataset.
 
 
 #loops through all files and subfolders insided tha path and returns the full path of each items
@@ -111,10 +111,8 @@ for items in path.iterdir():
 
                     # Optional for diagram: draw landmarks on images.
                     # mp_drawing.draw_landmarks(read_image,hands_idx,mp_hands.HAND_CONNECTIONS)
-
-
-        else:
-            print("Did not detect hand "+str(image_items))
+            else:
+                print("Did not detect hand "+str(image_items))
 
 
         # Optional for diagram: Show result
@@ -132,7 +130,7 @@ print("X shape:", X.shape)  # (num_samples, 63)
 print("Y shape:", Y.shape)  # (num_samples,)
 
 #Uncomment if you have not saved the file
-#np.save("asl_landmarks_X.npy", X)
-#np.save("asl_labels_y.npy", Y)
+np.save("asl_landmarks_X.npy", X)
+np.save("asl_labels_y.npy", Y)
 
 print("Landmarks saved")
