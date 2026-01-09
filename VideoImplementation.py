@@ -1,15 +1,21 @@
 import cv2
 import mediapipe as mp
 import numpy as np
+import joblib
+
+#Load model
+model = joblib.load("asl_rf_model.pkl")
 
 #Hand landmark detection
 mp_hands = mp.solutions.hands
 hands = mp_hands.Hands(
     static_image_mode=False,
-    max_num_hands=2,
+    max_num_hands=1,
     min_detection_confidence=0.5,
 )
 
+
+#Utility for drawing landmark
 mp_drawing = mp.solutions.drawing_utils
 
 cap = cv2.VideoCapture(0) # Open default camera
@@ -33,7 +39,26 @@ while True:
 
     if result_frame.multi_hand_landmarks:
         for hands_idx in result_frame.multi_hand_landmarks:
+            # Store landmarks
+            stored_landmarks = []
+
+            for idx,hand_landmark in enumerate(hands_idx.landmark):
+                #Append landmarks
+                stored_landmarks.extend([hand_landmark.x,hand_landmark.y, hand_landmark.z])
+
+            #convert into and array
+            stored_landmarks = np.array(stored_landmarks)
+            if stored_landmarks.shape == (63,):
+                #Reshape Landmark
+                reshaped_array = stored_landmarks.reshape(1, -1)
+                print(reshaped_array.shape)
+                #Make prediction
+                prediction = model.predict(reshaped_array)
+                print("Prediction:",prediction[0])
+
             mp_drawing.draw_landmarks(frame, hands_idx, mp_hands.HAND_CONNECTIONS)
+
+
 
     #Show frame
     cv2.imshow("Webcam",frame)
