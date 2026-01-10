@@ -3,8 +3,10 @@ import mediapipe as mp
 import numpy as np
 import joblib
 from NormalizationFunction import normalize_landmarks
-from Preprocessing import is_left_hand
+from collections import deque, Counter
 
+#Store Frames
+prediction_buffer = deque(maxlen=20)# stores the last 10 predictions
 #Load model
 model = joblib.load("asl_rf_model.pkl")
 
@@ -67,9 +69,13 @@ while True:
                 reshaped_array = normalized_landmarks.reshape(1, -1)
                 print(reshaped_array.shape)
                 #Make prediction
-                prediction = model.predict(reshaped_array)
-                print("Prediction:",prediction[0])
-                prediction_label = prediction[0]
+                prediction = model.predict(reshaped_array)[0]
+
+                prediction_buffer.append(prediction)
+
+                most_common = Counter(prediction_buffer).most_common(1)[0][0]
+                prediction_label = most_common
+
 
             mp_drawing.draw_landmarks(frame, hands_idx, mp_hands.HAND_CONNECTIONS)
     else:
