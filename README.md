@@ -26,7 +26,12 @@
 
 <div class="section">
   <h2>📊 DataSet Used</h2>
-  <a>https://www.kaggle.com/datasets/ayuraj/asl-dataset</a>
+  <h4>SignAlphaSet (Mendeley Data)</h4>
+  <ul>
+    <li>Total of 26,000 images of ASL alphabet, only used 600 images each letter for model training</li>
+    <li><span><div>Dataset Link: </div><a>https://data.mendeley.com/datasets/8fmvr9m98w</a></span></li>
+  </ul>
+  
 </div>
 
 <div class="section">
