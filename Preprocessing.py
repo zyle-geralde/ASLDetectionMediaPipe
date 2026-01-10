@@ -3,7 +3,6 @@ import numpy as np
 import cv2
 import mediapipe as mp
 
-
 #PREPROCESSING
 
 #Data augmentation
@@ -15,23 +14,29 @@ def augment_data(image):
     #Original Image
     augmented_images.append(image)
 
+    #Horizontal Flip
+    # flipped = cv2.flip(image, 1)
+    # augmented_images.append(flipped)
+
+    # I did not include rotation because of I and J which are similar. Inlude this if dataset is small
     #Rotation
-    for angle in [-15, 15]:
-        M = cv2.getRotationMatrix2D((w // 2, h // 2), angle, 1.0)
-        rotated = cv2.warpAffine(image, M, (w, h))
-        augmented_images.append(rotated)
+    # for angle in [-15, 15]:
+    #     M = cv2.getRotationMatrix2D((w // 2, h // 2), angle, 1.0)
+    #     rotated = cv2.warpAffine(image, M, (w, h))
+    #     augmented_images.append(rotated)
 
     #Scale
-    for scale in [0.9, 1.1]:
-        M = cv2.getRotationMatrix2D((w // 2, h // 2), 0, scale)
-        scaled = cv2.warpAffine(image, M, (w, h))
-        augmented_images.append(scaled)
+    #Excluded "scale up" because scaling up may cause the hand to be partially cropped
+    # for scale in [0.9]:
+    #     M = cv2.getRotationMatrix2D((w // 2, h // 2), 0, scale)
+    #     scaled = cv2.warpAffine(image, M, (w, h))
+    #     augmented_images.append(scaled)
 
     #Brightness change
-    brighter = cv2.convertScaleAbs(image, alpha=1.2, beta=20)
-    darker = cv2.convertScaleAbs(image, alpha=0.8, beta=-20)
-    augmented_images.append(brighter)
-    augmented_images.append(darker)
+    # brighter = cv2.convertScaleAbs(image, alpha=1.2, beta=20)
+    # darker = cv2.convertScaleAbs(image, alpha=0.8, beta=-20)
+    # augmented_images.append(brighter)
+    # augmented_images.append(darker)
 
     return augmented_images
 
@@ -51,7 +56,7 @@ valid_file = {".jpg", ".jpeg", ".png"}
 x = [] # features (the x,y,z landmarks)
 y = [] # labels (a,b,c,d ...)
 
-path = Path("C://Users//zylge//Downloads//ASL_dataset") # get the path of the dataset.
+path = Path("C://Users//zylge//Desktop//Datasets//SignAlphaSet_Sampled") # get the path of the dataset.
 
 
 #loops through all files and subfolders insided tha path and returns the full path of each items
@@ -110,7 +115,9 @@ for items in path.iterdir():
                         print("compiled feature != 63")
 
                     # Optional for diagram: draw landmarks on images.
-                    # mp_drawing.draw_landmarks(read_image,hands_idx,mp_hands.HAND_CONNECTIONS)
+                    #mp_drawing.draw_landmarks(aug_img,hands_idx,mp_hands.HAND_CONNECTIONS)
+
+
             else:
                 print("Did not detect hand "+str(image_items))
 
@@ -130,7 +137,7 @@ print("X shape:", X.shape)  # (num_samples, 63)
 print("Y shape:", Y.shape)  # (num_samples,)
 
 #Uncomment if you have not saved the file
-np.save("asl_landmarks_X.npy", X)
-np.save("asl_labels_y.npy", Y)
+np.save("asl_landmarks_Xtest.npy", X)
+np.save("asl_labels_ytest.npy", Y)
 
 print("Landmarks saved")

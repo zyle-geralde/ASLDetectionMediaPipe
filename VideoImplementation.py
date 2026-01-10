@@ -13,7 +13,7 @@ hands = mp_hands.Hands(
     max_num_hands=1,
     min_detection_confidence=0.5,
 )
-
+prediction_label = "No hand detected"
 
 #Utility for drawing landmark
 mp_drawing = mp.solutions.drawing_utils
@@ -55,10 +55,22 @@ while True:
                 #Make prediction
                 prediction = model.predict(reshaped_array)
                 print("Prediction:",prediction[0])
+                prediction_label = prediction[0]
 
             mp_drawing.draw_landmarks(frame, hands_idx, mp_hands.HAND_CONNECTIONS)
+    else:
+        prediction_label = "No hand detected"
 
-
+    cv2.putText(
+        frame,
+        f"ASL: {prediction_label}",
+        (20, 45),
+        cv2.FONT_HERSHEY_SIMPLEX,
+        1,
+        (0, 255, 0),
+        2,
+        cv2.LINE_AA
+    )
 
     #Show frame
     cv2.imshow("Webcam",frame)

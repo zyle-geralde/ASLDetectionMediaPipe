@@ -1,3 +1,5 @@
 asl_landmarks_X.npy
 asl_labels_y.npy
 asl_rf_model.pkl
+asl_landmarks_Xtest.npy
+asl_labels_ytest.npy
