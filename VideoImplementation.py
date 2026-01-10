@@ -2,6 +2,7 @@ import cv2
 import mediapipe as mp
 import numpy as np
 import joblib
+from NormalizationFunction import normalize_landmarks
 
 #Load model
 model = joblib.load("asl_rf_model.pkl")
@@ -49,8 +50,10 @@ while True:
             #convert into and array
             stored_landmarks = np.array(stored_landmarks)
             if stored_landmarks.shape == (63,):
+                # Normalize
+                normalized_landmarks = normalize_landmarks(stored_landmarks)
                 #Reshape Landmark
-                reshaped_array = stored_landmarks.reshape(1, -1)
+                reshaped_array = normalized_landmarks.reshape(1, -1)
                 print(reshaped_array.shape)
                 #Make prediction
                 prediction = model.predict(reshaped_array)

@@ -4,12 +4,13 @@ from sklearn.metrics import accuracy_score, classification_report
 import numpy as np
 import joblib
 
-x = np.load("asl_landmarks_X.npy")
-y = np.load("asl_labels_y.npy")
+x_train = np.load("asl_landmarks_X.npy")
+y_train = np.load("asl_labels_y.npy")
 
 #MODEL TRAINING
 #Split dataset
-x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=0.2, random_state=42)
+x_test = np.load("asl_landmarks_Xtest.npy")
+y_test = np.load("asl_labels_ytest.npy")
 
 #Train model
 random_classifier_model = RandomForestClassifier(

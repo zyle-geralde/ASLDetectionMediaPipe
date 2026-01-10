@@ -2,6 +2,7 @@ from pathlib import Path
 import numpy as np
 import cv2
 import mediapipe as mp
+from NormalizationFunction import normalize_landmarks
 
 #PREPROCESSING
 
@@ -14,30 +15,31 @@ def augment_data(image):
     #Original Image
     augmented_images.append(image)
 
-    #Horizontal Flip
+    #Uncomment this only if neede
+    # #Horizontal Flip
     # flipped = cv2.flip(image, 1)
     # augmented_images.append(flipped)
-
-    # I did not include rotation because of I and J which are similar. Inlude this if dataset is small
-    #Rotation
+    #
+    # #I did not include rotation because of I and J which are similar. Inlude this if dataset is small
+    # #Rotation
     # for angle in [-15, 15]:
     #     M = cv2.getRotationMatrix2D((w // 2, h // 2), angle, 1.0)
     #     rotated = cv2.warpAffine(image, M, (w, h))
     #     augmented_images.append(rotated)
-
-    #Scale
-    #Excluded "scale up" because scaling up may cause the hand to be partially cropped
+    #
+    # #Scale
+    # #Excluded "scale up" because scaling up may cause the hand to be partially cropped
     # for scale in [0.9]:
     #     M = cv2.getRotationMatrix2D((w // 2, h // 2), 0, scale)
     #     scaled = cv2.warpAffine(image, M, (w, h))
     #     augmented_images.append(scaled)
-
-    #Brightness change
+    #
+    # #Brightness change
     # brighter = cv2.convertScaleAbs(image, alpha=1.2, beta=20)
     # darker = cv2.convertScaleAbs(image, alpha=0.8, beta=-20)
     # augmented_images.append(brighter)
     # augmented_images.append(darker)
-
+    #
     return augmented_images
 
 
@@ -68,8 +70,18 @@ for items in path.iterdir():
         print("Is not a directory")
         continue
 
+    # counter for successfully landmarked images in this folder
+    success_count = 0
+    max_success = 400  #maximum per folder
+
     #loops through every image or subfolder of the current subfolder and returns the full path of each items
     for image_items in image_folder_path.iterdir():
+
+        # stop if already reached 500 successful images
+        if success_count >= max_success:
+            print(
+                f"Reached {max_success} successfully landmarked images in {image_folder_path.name}, moving to next folder.")
+            break
 
         #skip non-image file
         if image_items.suffix.lower() not in valid_file:
@@ -109,8 +121,13 @@ for items in path.iterdir():
 
                     # Check the length of compiled_feature list(should be 63 -> 21*3)
                     if len(compiled_features) == 63:
-                        x.append(compiled_features)
+                        # Normalize here
+                        normalized_features = normalize_landmarks(np.array(compiled_features))
+                        x.append(normalized_features)
+                        #No normalization
+                        #x.append(compiled_features)
                         y.append(image_folder_path.name)
+                        success_count += 1  # increment counter
                     if len(compiled_features) != 63:
                         print("compiled feature != 63")
 
