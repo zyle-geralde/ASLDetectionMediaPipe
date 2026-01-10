@@ -3,6 +3,7 @@ import mediapipe as mp
 import numpy as np
 import joblib
 from NormalizationFunction import normalize_landmarks
+from Preprocessing import is_left_hand
 
 #Load model
 model = joblib.load("asl_rf_model.pkl")
@@ -38,14 +39,24 @@ while True:
 
     result_frame = hands.process(frame_rgb)
 
-    if result_frame.multi_hand_landmarks:
-        for hands_idx in result_frame.multi_hand_landmarks:
+    if result_frame.multi_hand_landmarks and result_frame.multi_handedness:
+        for handidx,hands_idx in enumerate(result_frame.multi_hand_landmarks):
+
+            hand_label = result_frame.multi_handedness[handidx].classification[0].label
+            is_left_hand = (hand_label == "Left")
+
             # Store landmarks
             stored_landmarks = []
 
             for idx,hand_landmark in enumerate(hands_idx.landmark):
+
+                xlm, ylm, zlm = hand_landmark.x, hand_landmark.y, hand_landmark.z
+
+                if is_left_hand:
+                    xlm = 1.0 - xlm
+
                 #Append landmarks
-                stored_landmarks.extend([hand_landmark.x,hand_landmark.y, hand_landmark.z])
+                stored_landmarks.extend([xlm,ylm, zlm])
 
             #convert into and array
             stored_landmarks = np.array(stored_landmarks)

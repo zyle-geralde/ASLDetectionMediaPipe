@@ -21,7 +21,7 @@ random_classifier_model = RandomForestClassifier(
 random_classifier_model.fit(x_train, y_train)
 
 #Uncomment if you have not saved the model
-joblib.dump(random_classifier_model, "asl_rf_model.pkl")
+#joblib.dump(random_classifier_model, "asl_rf_model.pkl")
 print("Model saved")
 
 #make prediction

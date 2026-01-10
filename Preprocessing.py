@@ -16,7 +16,7 @@ def augment_data(image):
     augmented_images.append(image)
 
     #Uncomment this only if neede
-    # #Horizontal Flip
+    #Horizontal Flip
     # flipped = cv2.flip(image, 1)
     # augmented_images.append(flipped)
     #
@@ -107,16 +107,26 @@ for items in path.iterdir():
             # resutls: multi_handedness -> info about left/right hand
             results = hands.process(image_rgb)  # runs the hand detection  and landmarks
 
-            # Check if at least one hand exists
-            if results.multi_hand_landmarks:  # returns one or two lists containing 21 landmarks depending on how many hands detected
-                for hands_idx in results.multi_hand_landmarks:
-                    # list of compiled landmarks of the hand
+            # Check if at least one hand exists and if it has left/right label
+            if results.multi_hand_landmarks and results.multi_handedness:  # returns one or two lists containing 21 landmarks depending on how many hands detected
+                for hand_idx, hands_idx in enumerate(results.multi_hand_landmarks):
+                    #Get handedness (Left / Right)
+                    hand_label = results.multi_handedness[hand_idx].classification[0].label
+                    is_left_hand = (hand_label == "Left")
+
+                    #list of compiled landmarks of the hand
                     compiled_features = []
-                    # loops the landmarks
+                    #loops the landmarks
                     for index, hand_landmark in enumerate(
                             hands_idx.landmark):  # hand_landmark is a tuple or list of x,y,z
+
+                        xlm, ylm, zlm = hand_landmark.x, hand_landmark.y, hand_landmark.z
+                        #Convert left hand to right hand
+                        if is_left_hand:
+                            xlm = 1.0 - xlm
+
                         # since x,y,z are normalized (between 0 -1) multiply it with width and height respectively
-                        compiled_features.extend([hand_landmark.x, hand_landmark.y, hand_landmark.z])
+                        compiled_features.extend([xlm, ylm, zlm])
                         # print(hand_landmark.x * w, hand_landmark.y * h, hand_landmark.z)
 
                     # Check the length of compiled_feature list(should be 63 -> 21*3)
@@ -154,7 +164,7 @@ print("X shape:", X.shape)  # (num_samples, 63)
 print("Y shape:", Y.shape)  # (num_samples,)
 
 #Uncomment if you have not saved the file
-np.save("asl_landmarks_Xtest.npy", X)
-np.save("asl_labels_ytest.npy", Y)
+#np.save("asl_landmarks_Xtest.npy", X)
+#np.save("asl_labels_ytest.npy", Y)
 
 print("Landmarks saved")
